@@ -1,18 +1,18 @@
-options(warn=-1)
 library(stringr)
 library(dplyr)
 library(purrr)
 library(igraph)
+options(warn=-1)
 
 #uploading datasets and splitting by cancer subtype
-brca_clinical <- read.table("brca_clinical.txt", header = TRUE, sep = "\t", dec = ".")
+brca_clinical <- read.table("Data/brca_clinical.txt", header = TRUE, sep = "\t", dec = ".")
 brca_clinical <- na.omit(brca_clinical)
 brca_clinical.LumA <- brca_clinical[brca_clinical$SUBTYPE=="LumA",]
 brca_clinical.LumB <- brca_clinical[brca_clinical$SUBTYPE=="LumB",]
 brca_clinical.Basal <- brca_clinical[brca_clinical$SUBTYPE=="Basal",]
 #check.names=FALSE is MANDATORY, otherwise R transforms "-" in "." in IDs
-brca_expressions <- read.table("brca_expressions.txt", header = TRUE, sep = "\t", check.names=FALSE)
-brca_proteomics <- read.table("brca_proteomics.txt", header = TRUE, sep = "\t", dec = ".", check.names=FALSE)
+brca_expressions <- read.table("Data/brca_expressions.txt", header = TRUE, sep = "\t", check.names=FALSE)
+brca_proteomics <- read.table("Data/brca_proteomics.txt", header = TRUE, sep = "\t", dec = ".", check.names=FALSE)
 #intersection in order to split
 
 #mRNA
@@ -46,30 +46,31 @@ for(i in 1:length(brca_clinical.Basal$ID)){
 #creating files
 #quote=FALSE is MANDATORY in order to not have names between ""
 #mRNA
-write.table(brca_expressions.LumA, "brca_expressions.LumA.txt", sep="\t", dec=".", quote=FALSE)
-write.table(brca_expressions.LumB, "brca_expressions.LumB.txt", sep="\t", dec=".", quote=FALSE)
-write.table(brca_expressions.Basal, "brca_expressions.Basal.txt", sep="\t", dec=".", quote=FALSE)
+write.table(brca_expressions.LumA, "Data/brca_expressions.LumA.txt", sep="\t", dec=".", quote=FALSE)
+write.table(brca_expressions.LumB, "Data/brca_expressions.LumB.txt", sep="\t", dec=".", quote=FALSE)
+write.table(brca_expressions.Basal, "Data/brca_expressions.Basal.txt", sep="\t", dec=".", quote=FALSE)
 #proteins
-write.table(brca_proteomics.LumA, "brca_proteomics.LumA.txt", sep="\t", dec=".", quote=FALSE)
-write.table(brca_proteomics.LumB, "brca_proteomics.LumB.txt", sep="\t", dec=".", quote=FALSE)
-write.table(brca_proteomics.Basal, "brca_proteomics.Basal.txt", sep="\t", dec=".", quote=FALSE)
+write.table(brca_proteomics.LumA, "Data/brca_proteomics.LumA.txt", sep="\t", dec=".", quote=FALSE)
+write.table(brca_proteomics.LumB, "Data/brca_proteomics.LumB.txt", sep="\t", dec=".", quote=FALSE)
+write.table(brca_proteomics.Basal, "Data/brca_proteomics.Basal.txt", sep="\t", dec=".", quote=FALSE)
 #now we run java's script
+#shell() for windows, system() for unix
 shell(cmd="javac -cp . *.java")
 #StepMiner on mRNA
-shell(cmd="java StepMiner -i brca_expressions.LumA.txt -o MyResults/brca_expressions.LumA.discr.txt")
-shell(cmd="java StepMiner -i brca_expressions.LumB.txt -o MyResults/brca_expressions.LumB.discr.txt")
-shell(cmd="java StepMiner -i brca_expressions.Basal.txt -o MyResults/brca_expressions.Basal.discr.txt")
+shell(cmd="java StepMiner -i Data/brca_expressions.LumA.txt -o MyResults/brca_expressions.LumA.discr.txt")
+shell(cmd="java StepMiner -i Data/brca_expressions.LumB.txt -o MyResults/brca_expressions.LumB.discr.txt")
+shell(cmd="java StepMiner -i Data/brca_expressions.Basal.txt -o MyResults/brca_expressions.Basal.discr.txt")
 #StepMiner on proteins
-shell(cmd="java StepMiner -i brca_proteomics.LumA.txt -o MyResults/brca_proteomics.LumA.discr.txt")
-shell(cmd="java StepMiner -i brca_proteomics.LumB.txt -o MyResults/brca_proteomics.LumB.discr.txt")
-shell(cmd="java StepMiner -i brca_proteomics.Basal.txt -o MyResults/brca_proteomics.Basal.discr.txt")
+shell(cmd="java StepMiner -i Data/brca_proteomics.LumA.txt -o MyResults/brca_proteomics.LumA.discr.txt")
+shell(cmd="java StepMiner -i Data/brca_proteomics.LumB.txt -o MyResults/brca_proteomics.LumB.discr.txt")
+shell(cmd="java StepMiner -i Data/brca_proteomics.Basal.txt -o MyResults/brca_proteomics.Basal.discr.txt")
 #BooleanNet on discretized mRNA matrixes
-shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumA.discr.txt -o MyResults/brca_expressions.LumA.BoolNet.txt -s 3.0")
-shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumB.discr.txt -o MyResults/brca_expressions.LumB.BoolNet.txt -s 3.0")
+shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumA.discr.txt -o MyResults/brca_expressions.LumA.BoolNet.txt -s 2.5")
+shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumB.discr.txt -o MyResults/brca_expressions.LumB.BoolNet.txt -s 2.5")
 shell(cmd="java BooleanNet -i MyResults/brca_expressions.Basal.discr.txt -o MyResults/brca_expressions.Basal.BoolNet.txt -s 2.5")
 #BooleanNet on discretized proteins matrixes
-shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumA.discr.txt -o MyResults/brca_proteomics.LumA.BoolNet.txt -s 3.0")
-shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumB.discr.txt -o MyResults/brca_proteomics.LumB.BoolNet.txt -s 3.0")
+shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumA.discr.txt -o MyResults/brca_proteomics.LumA.BoolNet.txt -s 2.5")
+shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumB.discr.txt -o MyResults/brca_proteomics.LumB.BoolNet.txt -s 2.5")
 shell(cmd="java BooleanNet -i MyResults/brca_proteomics.Basal.discr.txt -o MyResults/brca_proteomics.Basal.BoolNet.txt -s 2.5")
 
 #some helpful functions
@@ -127,7 +128,7 @@ display_network <-function(df, values, title){
   E(net)$color[E(net)$Legame == 3] <- 'blue'
   E(net)$color[E(net)$Legame == 4] <- 'orange'
   
-  png(file=paste("MyResults/Plots/",title, ".png"), width=1440, height=1440)
+  png(file=paste("Plots/",title, ".png"), width=1440, height=1440)
   plot(net, edge.arrow.size=1, edge.curved=.3, edge.width=2.5, vertex.size=6.5, main=title)
   legend("bottomright",
          c("Low=>Low", "Low=>High", "High=>Low", "High=>High"),
@@ -136,6 +137,31 @@ display_network <-function(df, values, title){
          lwd = 1, lty = 1)
   dev.off() #gives a warning but everything works
   net
+}
+#intersect and maintain colors
+#works with 2 or 3 graphs
+intersect_colors <- function(graph1, graph2, graph3=NULL, title){
+  if(is.null(graph3)){
+  intersezione <- intersection(graph1, graph2, keep.all.vertices=FALSE)
+  E(intersezione)$color <- ifelse(is.na(E(intersezione)$color_1),
+                                  E(intersezione)$color_2,E(intersezione)$color_1)
+  }
+  else{
+    intersezione <- intersection(graph1, graph2, graph3, keep.all.vertices=FALSE)
+    E(intersezione)$color <- ifelse(is.na(E(intersezione)$color_1),
+                                    E(intersezione)$color_2,E(intersezione)$color_1)
+  }
+  png(file=paste("Plots/",title, ".png"), width=1440, height=1440)
+  plot(intersezione, edge.arrow.size=1, edge.curved=.3, edge.width=2.5, vertex.size=6.5, 
+       main=title)
+  legend("bottomright",
+         c("Low=>Low", "Low=>High", "High=>Low", "High=>High"),
+         col = c("green", "red", "blue", "orange"),
+         cex = 2.0,
+         lwd = 1, lty = 1)
+  dev.off()
+  intersezione
+  
 }
 
 #now let's test out function passing boolnet files
@@ -162,43 +188,9 @@ net_proteomics.LumA <- display_network(df_BoolNet_proteomics.LumA, values_BoolNe
 net_proteomics.LumB <- display_network(df_BoolNet_proteomics.LumB, values_BoolNet_proteomics.LumB, "LumB - Proteomics")
 net_proteomics.Basal <- display_network(df_BoolNet_proteomics.Basal, values_BoolNet_proteomics.Basal, "Basal - Proteomics")
 #intersection between graphs
+inter_LumA <- intersect_colors(net_expressions.LumA, net_proteomics.LumA, title="Intersection - LumA")
+inter_LumB <- intersect_colors(net_expressions.LumB, net_proteomics.LumB, title="Intersection - LumB")
+inter_Basal <- intersect_colors(net_expressions.Basal, net_proteomics.Basal, title="Intersection - Basal")
 
-inter_test <- intersection(net_expressions.LumA, net_expressions.LumB, net_expressions.Basal, keep.all.vertices=FALSE)
-#doesn't mantain attributes
-E(inter_test)$color[E(inter_test)$Legame == 1] <- 'green'
-E(inter_test)$color[E(inter_test)$Legame == 2] <- 'red'
-E(inter_test)$color[E(inter_test)$Legame == 3] <- 'blue'
-E(inter_test)$color[E(inter_test)$Legame == 4] <- 'orange'
-
-plot(inter_test, edge.arrow.size=1, edge.curved=.3, edge.width=2.5, vertex.size=6.5)
-
-
-
-mean_distance(net_proteomics.Basal)
-mean_distance(net_expressions.Basal)
-degree(net)
-
-
-
-
-
-
-#if(E(net)$Legame==1 1; else if(E(net)$Legame==2 2; else if(E(net)$Legame==3 3; else if(E(net)$Legame==4 4 ])
-
-
-
-
-string <- "RAB11B low"
-string <- str_replace(string, "([A-Z0-9])* ", replace="")
-string 
-string
-test <- df
-test <- test[]
-
-
-
-
-
-
-
-
+inter_expressions <- intersect_colors(net_expressions.LumA, net_expressions.LumB, net_expressions.Basal, title="Intersection - Expressions")
+inter_proteomics <- intersect_colors(net_proteomics.LumA, net_proteomics.LumB, net_proteomics.Basal, title="Intersection - Proteins")
