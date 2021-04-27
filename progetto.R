@@ -65,13 +65,13 @@ shell(cmd="java StepMiner -i Data/brca_proteomics.LumA.txt -o MyResults/brca_pro
 shell(cmd="java StepMiner -i Data/brca_proteomics.LumB.txt -o MyResults/brca_proteomics.LumB.discr.txt")
 shell(cmd="java StepMiner -i Data/brca_proteomics.Basal.txt -o MyResults/brca_proteomics.Basal.discr.txt")
 #BooleanNet on discretized mRNA matrixes
-shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumA.discr.txt -o MyResults/brca_expressions.LumA.BoolNet.txt -s 2.5")
-shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumB.discr.txt -o MyResults/brca_expressions.LumB.BoolNet.txt -s 2.5")
-shell(cmd="java BooleanNet -i MyResults/brca_expressions.Basal.discr.txt -o MyResults/brca_expressions.Basal.BoolNet.txt -s 2.5")
+shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumA.discr.txt -o MyResults/brca_expressions.LumA.BoolNet.txt -s 2.0")
+shell(cmd="java BooleanNet -i MyResults/brca_expressions.LumB.discr.txt -o MyResults/brca_expressions.LumB.BoolNet.txt -s 2.0")
+shell(cmd="java BooleanNet -i MyResults/brca_expressions.Basal.discr.txt -o MyResults/brca_expressions.Basal.BoolNet.txt -s 2.0")
 #BooleanNet on discretized proteins matrixes
-shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumA.discr.txt -o MyResults/brca_proteomics.LumA.BoolNet.txt -s 2.5")
-shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumB.discr.txt -o MyResults/brca_proteomics.LumB.BoolNet.txt -s 2.5")
-shell(cmd="java BooleanNet -i MyResults/brca_proteomics.Basal.discr.txt -o MyResults/brca_proteomics.Basal.BoolNet.txt -s 2.5")
+shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumA.discr.txt -o MyResults/brca_proteomics.LumA.BoolNet.txt -s 2.0")
+shell(cmd="java BooleanNet -i MyResults/brca_proteomics.LumB.discr.txt -o MyResults/brca_proteomics.LumB.BoolNet.txt -s 2.0")
+shell(cmd="java BooleanNet -i MyResults/brca_proteomics.Basal.discr.txt -o MyResults/brca_proteomics.Basal.BoolNet.txt -s 2.0")
 
 #some helpful functions
 
